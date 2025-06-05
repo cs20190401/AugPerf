@@ -52,11 +52,11 @@ OSC_PORT = 8000
 osc_client = SimpleUDPClient(OSC_IP, OSC_PORT)
 
 # Paths to input files
-reference_audio_path = "/Users/wonseonjae/rep/AugPerf/resources/dataset/mini_band_harmonix/record/tracks/0004_abc.mp3"
-beat_label_path = "/Users/wonseonjae/rep/AugPerf/resources/dataset/mini_band_harmonix/record/beats/0004_abc.txt"
-fx_label_path = "/Users/wonseonjae/rep/AugPerf/resources/dataset/mini_band_harmonix/live/fx_list/0004_abc.txt"
+reference_audio_path = "./resources/dataset/mini_band_harmonix/record/tracks/0004_abc.mp3"
+beat_label_path = "./resources/dataset/mini_band_harmonix/record/beats/0004_abc.txt"
+fx_label_path = "./resources/dataset/mini_band_harmonix/live/fx_list/0004_abc.txt"
 
-performance_audio_path = "/Users/wonseonjae/rep/AugPerf/resources/dataset/mini_band_harmonix/live/tracks_441/0004_abc.mp3"
+performance_audio_path = "./resources/dataset/mini_band_harmonix/live/tracks_441/0004_abc.mp3"
 
 # Preprocessing step
 print("Preprocessing reference data...")
