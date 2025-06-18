@@ -3,8 +3,8 @@ import soundfile as sf
 import os
 from pydub import AudioSegment
 
-audio_folder = "/Users/wonseonjae/rep/resources/dataset/mini_band_harmonix/live/tracks_cut"   # Folder containing input audio files
-output_folder = "/Users/wonseonjae/rep/resources/dataset/mini_band_harmonix/live/tracks_441" # Folder to save resampled files
+audio_folder = "./AugPerf/resources/dataset/mini_band_harmonix/trimmed/record/tracks/"   # Folder containing input audio files
+output_folder = "./AugPerf/resources/dataset/mini_band_harmonix/trimmed/record/tracks_441" # Folder to save resampled files
 
 os.makedirs(output_folder, exist_ok=True)
 

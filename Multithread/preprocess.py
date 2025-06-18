@@ -1,8 +1,9 @@
 import librosa
 import numpy as np
 import os
+from matchmaker.features.audio import MFCCProcessor, MelSpectrogramProcessor, ChromagramProcessor
 
-def preprocess_reference_audio(reference_audio_path, feature_type="mel", sample_rate=48000, mono=True):
+def preprocess_reference_audio(reference_audio_path, feature_type="mel", sample_rate=44100, mono=True):
     """
     Load the reference audio and extract its audio features.
     """
@@ -13,20 +14,31 @@ def preprocess_reference_audio(reference_audio_path, feature_type="mel", sample_
     
     # Extract features based on the specified feature type
     if feature_type == "mfcc":
-        processor = librosa.feature.mfcc
-        reference_features = processor(y=reference_audio, sr=sample_rate, n_mfcc=13)
+        processor = MFCCProcessor(
+            sample_rate=sample_rate,
+        )
+        #processor = librosa.feature.mfcc
+        #reference_features = processor(y=reference_audio, sr=sample_rate, n_mfcc=13)
     elif feature_type == "mel":
-        processor = librosa.feature.melspectrogram
-        reference_features = processor(y=reference_audio, sr=sample_rate)
+        processor = MelSpectrogramProcessor(
+            sample_rate=sample_rate,
+        )
+        #processor = librosa.feature.melspectrogram
+        #reference_features = processor(y=reference_audio, sr=sample_rate)
     elif feature_type == "chroma":
-        processor = librosa.feature.chroma_stft
-        reference_features = processor(y=reference_audio, sr=sample_rate)
+        processor = ChromagramProcessor(
+            sample_rate=sample_rate,
+        )
+        #processor = librosa.feature.chroma_stft
+        #reference_features = processor(y=reference_audio, sr=sample_rate)
     else:
         raise ValueError(f"Unsupported feature type: {feature_type}")
     
-    reference_features = reference_features.T  # Transpose to match expected shape
+    reference_features = processor(reference_audio)
+    #reference_features = reference_features.T  # Transpose to match expected shape
     print(f"Extracted {feature_type} features from reference audio.")
     return reference_features
+
 
 
 def get_reference_beat_label(beat_label_path):
@@ -40,7 +52,7 @@ def get_reference_beat_label(beat_label_path):
             parts = line.strip().split("\t")  # Split the line by tab
             timestamp = float(parts[0])  # Take the first value as the timestamp
             beat_labels.append(timestamp)
-    print(f"Loaded {len(beat_labels)} beat labels.")
+    #print(f"Loaded {len(beat_labels)} beat labels.")
     return np.array(beat_labels)
 
 
@@ -48,7 +60,7 @@ def convert_beat_label(beat_labels, sample_rate, hop_length):
     """
     Convert beat label timestamps to frame numbers.
     """
-    print("Converting beat labels to frame numbers...")
+    #print("Converting beat labels to frame numbers...")
     beat_frames = librosa.time_to_frames(beat_labels, sr=sample_rate, hop_length=hop_length)
     print(f"Converted {len(beat_frames)} beat labels to frame numbers.")
     return beat_frames
@@ -58,7 +70,7 @@ def get_tempo(beat_labels):
     """
     Measure the tempo of the reference audio using the beat labels.
     """
-    print("Calculating tempo from beat labels...")
+    #print("Calculating tempo from beat labels...")
     if len(beat_labels) < 2:
         raise ValueError("Not enough beat labels to calculate tempo.")
     inter_beat_intervals = np.diff(beat_labels)
@@ -79,7 +91,7 @@ def get_fx_label(fx_label_path):
             timestamp = float(parts[0])
             fx_id = int(parts[1])
             fx_list.append((timestamp, fx_id))
-    print(f"Loaded {len(fx_list)} FX labels.")
+    #print(f"Loaded {len(fx_list)} FX labels.")
     return fx_list
 
 
@@ -87,7 +99,7 @@ def convert_fx_label(fx_list, beat_labels, delay_threshold, sample_rate, hop_len
     """
     Convert FX labels to (frame#, delay) using the beat labels.
     """
-    print("Converting FX labels to frame numbers and delays...")
+    #print("Converting FX labels to frame numbers and delays...")
     converted_fx = []
     for timestamp, fx_id in fx_list:
         # Find the last beat before (timestamp - delay_threshold)
